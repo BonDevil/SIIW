@@ -1,5 +1,5 @@
 # Reversi
-
+import copy
 import random
 import sys
 
@@ -24,15 +24,6 @@ def readBoard():
     for i in range(8):
         row = input().split()
         board.append([int(x) for x in row])
-    return board
-
-
-def getNewBoard():
-    # Creates a brand new, blank board data structure.
-    board = []
-    for i in range(8):
-        board.append(['0'] * 8)
-
     return board
 
 
@@ -96,24 +87,14 @@ def makeMove(board, tile, xstart, ystart):
     # Returns False if this is an invalid move, True if it is valid.
     tilesToFlip = isValidMove(board, tile, xstart, ystart)
 
+    new_board = copy.deepcopy(board)
     if not tilesToFlip:
-        return board
+        return new_board
 
-    board[xstart][ystart] = tile
+    new_board[xstart][ystart] = tile
     for x, y in tilesToFlip:
-        board[x][y] = tile
-    return board
-
-
-def getBoardCopy(board):
-    # Make a duplicate of the board list and return the duplicate.
-    dupeBoard = getNewBoard()
-
-    for x in range(8):
-        for y in range(8):
-            dupeBoard[x][y] = board[x][y]
-
-    return dupeBoard
+        new_board[x][y] = tile
+    return new_board
 
 
 def isOnCorner(x, y):
@@ -138,7 +119,7 @@ def getComputerMove(board, computerTile):
     bestScore = -1
     bestMove = possibleMoves[0]
     for x, y in possibleMoves:
-        dupeBoard = getBoardCopy(board)
+        dupeBoard = copy.deepcopy(board)
         makeMove(dupeBoard, computerTile, x, y)
         score = getScoreOfBoard(dupeBoard)[computerTile]
         if score > bestScore:
@@ -146,6 +127,41 @@ def getComputerMove(board, computerTile):
             bestScore = score
     return bestMove
 
+
+def minimax(board, depth, maximizing_player, player_tile):
+    if depth == 0 or is_game_over(board):
+        return getScoreOfBoard(board)[player_tile], None
+
+    if maximizing_player:
+        max_eval = float('-inf')
+        best_move = None
+        for move in getValidMoves(board, player_tile):
+            new_board = makeMove(board, player_tile, move[0], move[1])
+            eval, _ = minimax(new_board, depth - 1, False, 3 - player_tile)
+
+            if eval > max_eval:
+                max_eval = eval
+                best_move = move
+        return max_eval, best_move
+    else:
+        min_eval = float('inf')
+        best_move = None
+        for move in getValidMoves(board, player_tile):
+            new_board = makeMove(board, player_tile, move[0], move[1])
+            eval, _ = minimax(new_board, depth - 1, True, 3 - player_tile)
+            if eval < min_eval:
+                min_eval = eval
+                best_move = move
+        return min_eval, best_move
+
+
+
+def is_game_over(board):
+    # Check if the board is full
+    for row in board:
+        if 0 in row:
+            return False
+    return True
 
 def showPoints(playerTile, computerTile, board):
     # Prints out the current score.

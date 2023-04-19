@@ -7,21 +7,20 @@ if __name__ == '__main__':
     turn = 'player_one'
     while True:
         if turn == 'player_one':
-            x, y = getComputerMove(mainBoard, PLAYER_ONE_TILE)
-            mainBoard = makeMove(mainBoard, PLAYER_ONE_TILE, x, y)
-            if not getValidMoves(mainBoard, PLAYER_TWO_TILE):
+            val, move = minimax(mainBoard, 5, True, PLAYER_ONE_TILE)
+            mainBoard = makeMove(mainBoard, PLAYER_ONE_TILE, move[0], move[1])
+            if getValidMoves(mainBoard, PLAYER_TWO_TILE) == []:
                 break
             else:
                 turn = 'player_two'
 
         else:
-            x, y = getComputerMove(mainBoard, PLAYER_TWO_TILE)
-            mainBoard = makeMove(mainBoard, PLAYER_TWO_TILE, x, y)
+            val, move = minimax(mainBoard, 1, True, PLAYER_TWO_TILE)
+            mainBoard = makeMove(mainBoard, PLAYER_TWO_TILE, move[0], move[1])
             if getValidMoves(mainBoard, PLAYER_ONE_TILE) == []:
                 break
             else:
                 turn = 'player_one'
-
 
     drawBoard(mainBoard)
     print(getScoreOfBoard(mainBoard))
