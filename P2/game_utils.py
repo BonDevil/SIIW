@@ -3,18 +3,26 @@ import copy
 import random
 import sys
 
+from colorama import Fore, Style
+
 PLAYER_ONE_TILE = 1
 PLAYER_TWO_TILE = 2
 
 
 def drawBoard(board):
-    # This function prints out the board that it was passed. Returns None.
-    HLINE = '-------------------------------------------------'
+    HLINE = '-----------------------------------------'
 
     print(HLINE)
     for y in range(8):
         for x in range(8):
-            print('|  %s ' % (board[x][y]), end=' ')
+            tile = board[x][y]
+            if tile == PLAYER_ONE_TILE:
+                print(f'|  {Fore.GREEN}{Style.BRIGHT}{tile}{Style.RESET_ALL}', end=' ')
+            elif tile == PLAYER_TWO_TILE:
+                print(f'|  {Fore.RED}{Style.BRIGHT}{tile}{Style.RESET_ALL}', end=' ')
+            else:
+                tile = str(x+1) + str(y+1)
+                print(f'| {tile}', end=' ')
         print("|")
         print(HLINE)
 
@@ -25,6 +33,25 @@ def readBoard():
         row = input().split()
         board.append([int(x) for x in row])
     return board
+
+
+def getPlayerMove(board, playerTile):
+    DIGITS1TO8 = '1 2 3 4 5 6 7 8'.split()
+
+    while True:
+        print('Enter your move (two digits from 1-8)')
+        move = input().lower()
+
+        if len(move) == 2 and move[0] in DIGITS1TO8 and move[1] in DIGITS1TO8:
+            x, y = int(move[0]) - 1, int(move[1]) - 1
+            if isValidMove(board, playerTile, x, y):
+                break
+            else:
+                continue
+
+        print('That is not a valid move.')
+
+    return [x, y]
 
 
 def isValidMove(board, player_tile, x_start, y_start):
@@ -155,13 +182,13 @@ def minimax(board, depth, maximizing_player, player_tile):
         return min_eval, best_move
 
 
-
 def is_game_over(board):
     # Check if the board is full
     for row in board:
         if 0 in row:
             return False
     return True
+
 
 def showPoints(playerTile, computerTile, board):
     # Prints out the current score.
