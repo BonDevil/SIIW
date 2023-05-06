@@ -1,44 +1,46 @@
+from P2.algorithms import *
 from P2.game_utils import *
 
 
-#comp vs comp game
+# comp vs comp game
 # if __name__ == '__main__':
 #
-#     mainBoard = readBoard()
+#     main_board = read_board()
 #     turn = 'player_one'
 #     while True:
 #         if turn == 'player_one':
-#             val, move = minimax(mainBoard, 5, True, PLAYER_ONE_TILE)
-#             mainBoard = makeMove(mainBoard, PLAYER_ONE_TILE, move[0], move[1])
-#             if getValidMoves(mainBoard, PLAYER_TWO_TILE) == []:
+#             val, move = minimax(main_board, 5, True, PLAYER_ONE_TILE)
+#             main_board = make_move(main_board, PLAYER_ONE_TILE, move[0], move[1])
+#             if get_valid_moves(main_board, PLAYER_TWO_TILE) == []:
 #                 break
 #             else:
 #                 turn = 'player_two'
 #
 #         else:
-#             val, move = minimax(mainBoard, 1, True, PLAYER_TWO_TILE)
-#             mainBoard = makeMove(mainBoard, PLAYER_TWO_TILE, move[0], move[1])
-#             if getValidMoves(mainBoard, PLAYER_ONE_TILE) == []:
+#             val, move = minimax(main_board, 1, True, PLAYER_TWO_TILE)
+#             main_board = make_move(main_board, PLAYER_TWO_TILE, move[0], move[1])
+#             if get_valid_moves(main_board, PLAYER_ONE_TILE) == []:
 #                 break
 #             else:
 #                 turn = 'player_one'
 #
-#     drawBoard(mainBoard)
-#     print(getScoreOfBoard(mainBoard))
+#     draw_board(main_board)
+#     print(get_score_of_board(main_board))
 
-#player vs computer game
+
+# player vs computer game
 if __name__ == '__main__':
 
-    mainBoard = readBoard()
-    drawBoard(mainBoard)
+    main_board = read_board()
+    draw_board(main_board)
     turn = 'player_one'
     while True:
         if turn == 'player_one':
-            move = getPlayerMove(mainBoard, PLAYER_ONE_TILE)
-            mainBoard = makeMove(mainBoard, PLAYER_ONE_TILE, move[0], move[1])
+            move = get_player_move(main_board, PLAYER_ONE_TILE)
+            main_board = make_move(main_board, PLAYER_ONE_TILE, move[0], move[1])
             print("After player's move")
-            drawBoard(mainBoard)
-            if not getValidMoves(mainBoard, PLAYER_TWO_TILE):
+            draw_board(main_board)
+            if not get_valid_moves(main_board, PLAYER_TWO_TILE):
                 break
             else:
                 turn = 'player_two'
@@ -46,18 +48,25 @@ if __name__ == '__main__':
         else:
             print("Press key to make computer's move")
             input()
-            val, move = minimax(mainBoard, 1, True, PLAYER_TWO_TILE)
-            mainBoard = makeMove(mainBoard, PLAYER_TWO_TILE, move[0], move[1])
+
+            # minimax with corner heuristic - without ab pruning
+            # val, move = minimax(main_board, depth=6, maximizing_player=True, player_tile=PLAYER_TWO_TILE)
+
+            # minimax with corner heuristic - with ab pruning
+            val, move = minimax_ab(main_board, depth=6, maximizing_player=True, player_tile=PLAYER_TWO_TILE,
+                                   alpha=float('-inf'), beta=float('inf'))
+
+            # make move and draw board
+            main_board = make_move(main_board, PLAYER_TWO_TILE, move[0], move[1])
             print("After computer's move")
-            drawBoard(mainBoard)
-            if not getValidMoves(mainBoard, PLAYER_ONE_TILE):
+            draw_board(main_board)
+            if not get_valid_moves(main_board, PLAYER_ONE_TILE):
                 break
             else:
                 turn = 'player_one'
 
-    drawBoard(mainBoard)
-    print(getScoreOfBoard(mainBoard))
-
+    draw_board(main_board)
+    print(get_score_of_board(main_board))
 
 
     """
