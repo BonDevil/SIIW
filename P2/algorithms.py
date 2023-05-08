@@ -37,49 +37,49 @@ def heuristic_default(board, player_tile):
     return 0
 
 
-def minimax(board, depth, maximizing_player, player_tile, heuristic=heuristic_default, print_tree=False, indent=0):
-    if depth == 0 or is_game_over(board):
-        score = get_score_of_board(board)[player_tile] + heuristic(board, player_tile)
-        if print_tree:
-            print(f"{' ' * indent}Score: {score}")
-        return score, None
-
-    if maximizing_player:
-        max_eval = float('-inf')
-        best_move = None
-        for move in get_valid_moves(board, player_tile):
-            new_board = make_move(board, player_tile, move[0], move[1])
-            if print_tree:
-                print(f"{' ' * indent}Player {player_tile} ({move[0]}, {move[1]})")
-            eval, _ = minimax(new_board, depth - 1, False, 3 - player_tile, heuristic, print_tree, indent + 2)
-
-            if eval > max_eval:
-                max_eval = eval
-                best_move = move
-        if print_tree:
-            print(f"{' ' * indent}Max Eval: {max_eval}")
-        return max_eval, best_move
-    else:
-        min_eval = float('inf')
-        best_move = None
-        for move in get_valid_moves(board, player_tile):
-            new_board = make_move(board, player_tile, move[0], move[1])
-            if print_tree:
-                print(f"{' ' * indent}Player {player_tile} ({move[0]}, {move[1]})")
-            eval, _ = minimax(new_board, depth - 1, True, 3 - player_tile, heuristic, print_tree, indent + 2)
-            if eval < min_eval:
-                min_eval = eval
-                best_move = move
-        if print_tree:
-            print(f"{' ' * indent}Min Eval: {min_eval}")
-        return min_eval, best_move
+# def minimax(board, depth, maximizing_player, player_tile, heuristic=heuristic_default, print_tree=False, indent=0):
+#     if depth == 0 or is_game_over(board):
+#         score = get_score_of_board(board)[player_tile] + heuristic(board, player_tile)
+#         if print_tree:
+#             print(f"{' ' * indent}Score: {score}")
+#         return score, None
+#
+#     if maximizing_player and len(get_valid_moves(board, player_tile)) > 0:
+#         max_eval = float('-inf')
+#         best_move = None
+#         for move in get_valid_moves(board, player_tile):
+#             new_board = make_move(board, player_tile, move[0], move[1])
+#             if print_tree:
+#                 print(f"{' ' * indent}Player {player_tile} ({move[0]}, {move[1]})")
+#             eval, _ = minimax(new_board, depth - 1, False, 3 - player_tile, heuristic, print_tree, indent + 2)
+#
+#             if eval > max_eval:
+#                 max_eval = eval
+#                 best_move = move
+#         if print_tree:
+#             print(f"{' ' * indent}Max Eval: {max_eval}")
+#         return max_eval, best_move
+#     else:
+#         min_eval = float('inf')
+#         best_move = None
+#         for move in get_valid_moves(board, player_tile):
+#             new_board = make_move(board, player_tile, move[0], move[1])
+#             if print_tree:
+#                 print(f"{' ' * indent}Player {player_tile} ({move[0]}, {move[1]})")
+#             eval, _ = minimax(new_board, depth - 1, True, 3 - player_tile, heuristic, print_tree, indent + 2)
+#             if eval < min_eval:
+#                 min_eval = eval
+#                 best_move = move
+#         if print_tree:
+#             print(f"{' ' * indent}Min Eval: {min_eval}")
+#         return min_eval, best_move
 
 
 def minimax_ab(board, depth, alpha, beta, maximizing_player, player_tile, heuristic=heuristic_default):
     if depth == 0 or is_game_over(board):
         return get_score_of_board(board)[player_tile] + heuristic(board, player_tile), None
 
-    if maximizing_player:
+    if maximizing_player and len(get_valid_moves(board, player_tile)) > 0:
         max_eval = float('-inf')
         best_move = None
         for move in get_valid_moves(board, player_tile):
