@@ -1,0 +1,91 @@
+% siec semantyczna
+
+element(nozki).
+element(mieszadla).
+element(czujnik).
+element(obudowa).
+element(miska).
+element(silnik).
+element(przełącznik).
+
+posiada(miska, nozki).
+posiada(obudowa, czujnik).
+posiada(obudowa, silnik).
+posiada(obudowa, przełącznik).
+
+element_blokujacy(nozki, obudowa).
+element_blokujacy(mieszadla, obudowa).
+
+% baza wiedzy
+
+przyczyna(blad1, mieszadla_nie_obracaja_sie).
+przyczyna(blad2, nozki_zawieszone).
+przyczyna(blad3, przegrzanie_silnika).
+przyczyna(blad4, zabrudzony_czujnik).
+przyczyna(blad5, obudowa_nie_zamyka_sie_poprawnie).
+przyczyna(blad6, miska_nie_zamocowana_poprawnie).
+przyczyna(blad7, przełącznik_nie_działa).
+przyczyna(blad7, silnik_nie_startuje).
+przyczyna(blad8, nozki_zablokowane).
+przyczyna(blad9, czujnik_nie_działa).
+
+powoduje(obudowa, blad1).
+powoduje(nozki, blad2).
+powoduje(silnik, blad3).
+powoduje(czujnik, blad4).
+powoduje(obudowa, blad4).
+powoduje(obudowa, blad5).
+powoduje(miska, blad6).
+powoduje(przełącznik, blad7).
+powoduje(silnik, blad7).
+powoduje(nozki, blad8).
+powoduje(czujnik, blad9).
+powoduje(obudowa, blad9).
+
+napraw(mieszadla_nie_obracaja_sie, mieszadla).
+napraw(nozki_zawieszone, nozki).
+napraw(przegrzanie_silnika, silnik).
+napraw(zabrudzony_czujnik, czujnik).
+napraw(obudowa_nie_zamyka_sie_poprawnie, obudowa).
+napraw(miska_nie_zamocowana_poprawnie, miska).
+napraw(przełącznik_nie_działa, przełącznik).
+napraw(silnik_nie_startuje, silnik).
+napraw(nozki_zablokowane, nozki).
+napraw(czujnik_nie_działa, czujnik).
+
+% predykaty
+
+powod_powodowany_przez_element(Element, Powod) :-
+    przyczyna(Blad, Powod),
+    (
+        (
+        element(Element),
+        powoduje(Element, Blad),
+        napraw(Powod, Element)
+        )
+    ;
+        (
+        element_blokujacy(Element, NadElement),
+        powoduje(NadElement, Blad),
+        napraw(Powod, NadElement)
+        )
+    ).
+
+element_w_bledzie(Blad, Element, PodElement)  :-
+    przyczyna(Blad, _),
+    (
+        (
+        element(Element),
+        powoduje(Element, Blad)
+        )
+    ;
+        (
+        powoduje(Element, Blad),
+        element_blokujacy(PodElement, Element)
+        )
+    ).
+
+powoduje_wiecej_niz_jeden_element(Blad) :-
+    powoduje(Element1, Blad),
+    powoduje(Element2, Blad),
+    Element1 \= Element2.
